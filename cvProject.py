@@ -58,23 +58,44 @@ def find_Faces():
         cv2.imshow("frame", image)
         cv2.waitKey(1)
 
-def find_Words():
+
+def find_Words(file):
 
     pytesseract.tesseract_cmd = "/opt/homebrew/Cellar/tesseract/5.2.0/bin/tesseract"
 
-    img = cv2.imread("top_artists_short_term.png")
+    img = cv2.imread(file)
 
     words_in_image = pytesseract.image_to_string(img)
 
-    print(words_in_image)
+    print("\n******************************")
+    print("\n" + words_in_image + "\n")
+    print("******************************")
 
+    fileNameParts = file.partition(".")
+    filename = fileNameParts[0] + ".txt" # fix filename
+
+    f = open(filename, "w")
+    for line in words_in_image:
+        f.write(line)
+    f.close()
 
 
 def main():
 
-    find_Words()
-    find_Faces()
+    print("\nWelcome to Hewitt's Open CV Project!!!")
+    file = input("\nPlease input the filename of an image: ")
+    find_Words(file)
+    print("\nGet your files to find a text file containing all text from the image or look at a preview of it in terminal.") # fix when this prints
 
-
+    print("\nNow, let's try to figure out who you are.")
+    consent = input("Can I figure out who you are? (y/n): ")
+    if consent == "y":
+        find_Faces()
 
 main()
+
+# to Do's
+
+# comment
+# fix textfile name
+# fix keyboard interrupt at the end to end the video
