@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import os
 
-
+# path to the folder with all the images containing faces to idenitfy - name of file = face name
 faces_path = "/Users/school/Documents/School/AHCompSci/opencv/faces"
 
 def get_face_encodings():
@@ -23,15 +23,16 @@ def get_face_encodings():
 
 def find_Faces():
 
-    faces_path = "/Users/school/Documents/School/AHCompSci/opencv/faces"
-
     face_encodings, face_names = get_face_encodings()
 
+    # store video from latpop camera in variable video
     video = cv2.VideoCapture(0)
 
+    # scale factor of video image
     scl = 2
 
     while True:
+
         success, image = video.read()
 
         resized_image = cv2.resize(image, (int(image.shape[1]/scl), int(image.shape[0]/scl)))
@@ -45,6 +46,7 @@ def find_Faces():
 
             result = fr.compare_faces(face_encodings, face_encoding, 0.45)
 
+            # draw box around and label the face if identified
             if True in result:
                 name = face_names[result.index(True)]
 
@@ -61,10 +63,12 @@ def find_Faces():
 
 def find_Words(file):
 
+    # get a pytesseract executable
     pytesseract.tesseract_cmd = "/opt/homebrew/Cellar/tesseract/5.2.0/bin/tesseract"
 
     img = cv2.imread(file)
 
+    # list of all words from the image returned from the pytesseract executable
     words_in_image = pytesseract.image_to_string(img)
 
     print("\n******************************")
@@ -74,6 +78,7 @@ def find_Words(file):
     fileNameParts = file.partition(".")
     filename = fileNameParts[0] + ".txt" # fix filename
 
+    # store words in a text file
     f = open(filename, "w")
     for line in words_in_image:
         f.write(line)
@@ -84,12 +89,16 @@ def main():
 
     print("\nWelcome to Hewitt's Open CV Project!!!")
     file = input("\nPlease input the filename of an image: ")
-    find_Words(file)
+
+    # Use tesseract to get words from an image store into text file
+    find_Words(file) # give name of image
     print("\nGet your files to find a text file containing all text from the image or look at a preview of it in terminal.") # fix when this prints
 
     print("\nNow, let's try to figure out who you are.")
     consent = input("Can I figure out who you are? (y/n): ")
     if consent == "y":
+
+        # Use face_recognition library to identify faces using the laptop camera
         find_Faces()
 
 main()
@@ -99,3 +108,6 @@ main()
 # comment
 # fix keyboard interrupt at the end to end the video
 # add readme that explains how this meets the grading requirements
+# ask dr. j how enumerate works *************************************************
+
+# finish comments and read me
