@@ -97,5 +97,5 @@ main()
 # to Do's
 
 # comment
-# fix textfile name
 # fix keyboard interrupt at the end to end the video
+# add readme that explains how this meets the grading requirements
