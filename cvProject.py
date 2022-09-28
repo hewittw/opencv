@@ -75,30 +75,44 @@ def find_Faces():
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(image, name, (left*scl, bottom*scl + 20), font, 0.8, (255, 255, 255), 1)
 
+                face_landmarks_list = face_recognition.face_landmarks(image)
+                # for face_landmarks in face_landmarks_list:
+                #     for facial_feature in face_landmarks.keys():
+                #         cv2.line(image, face_landmarks[facial_feature], width=5)
+                for face_landmarks in face_landmarks_list:
+
+                    # Let's trace out each facial feature in the image with a line!
+                    for facial_feature in face_landmarks.keys():
+                        #d.line(face_landmarks[facial_feature], width=5)
+                        #print(face_landmarks[facial_feature])
+                        for i in range(0, len(face_landmarks[facial_feature])-2):
+                            cv2.line(image, face_landmarks[facial_feature][i], face_landmarks[facial_feature][i+1], (255, 0, 255), 1)
+
+
 
         # start test ------------------------------------------------------------------------
 
-        face_landmarks_list = face_recognition.face_landmarks(image)
-
-        print("I found {} face(s) in this photograph.".format(len(face_landmarks_list)))
-
-        # Create a PIL imagedraw object so we can draw on the picture
-        pil_image = Image.fromarray(image)
-        d = ImageDraw.Draw(pil_image)
-
-
-        for face_landmarks in face_landmarks_list:
-
-            # Print the location of each facial feature in this image
-            for facial_feature in face_landmarks.keys():
-                print("The {} in this face has the following points: {}".format(facial_feature, face_landmarks[facial_feature]))
-
-            # Let's trace out each facial feature in the image with a line!
-            for facial_feature in face_landmarks.keys():
-                d.line(face_landmarks[facial_feature], width=5)
-
-        # Show the picture
-        pil_image.show()
+        # face_landmarks_list = face_recognition.face_landmarks(image)
+        #
+        # print("I found {} face(s) in this photograph.".format(len(face_landmarks_list)))
+        #
+        # # Create a PIL imagedraw object so we can draw on the picture
+        # pil_image = Image.fromarray(image)
+        # d = ImageDraw.Draw(pil_image)
+        #
+        #
+        # for face_landmarks in face_landmarks_list:
+        #
+        #     # Print the location of each facial feature in this image
+        #     for facial_feature in face_landmarks.keys():
+        #         print("The {} in this face has the following points: {}".format(facial_feature, face_landmarks[facial_feature]))
+        #
+        #     # Let's trace out each facial feature in the image with a line!
+        #     for facial_feature in face_landmarks.keys():
+        #         d.line(face_landmarks[facial_feature], width=5)
+        #
+        # # Show the picture
+        # pil_image.show()
 
         # end test ------------------------------------------------------------------------
 
@@ -150,13 +164,18 @@ def test(name):
         # Print the location of each facial feature in this image
         for facial_feature in face_landmarks.keys():
             print("The {} in this face has the following points: {}".format(facial_feature, face_landmarks[facial_feature]))
+            print("-----------")
 
         # Let's trace out each facial feature in the image with a line!
         for facial_feature in face_landmarks.keys():
             d.line(face_landmarks[facial_feature], width=5)
+            #print(face_landmarks[facial_feature])
+            for point in face_landmarks[facial_feature]:
+                print(point)
+
 
     # Show the picture
-    pil_image.show()
+    #pil_image.show()
 
 def main():
 
