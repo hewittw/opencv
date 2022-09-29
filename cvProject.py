@@ -10,12 +10,21 @@ import face_recognition
 faces_path = "/Users/school/Documents/School/AHCompSci/opencv/faces"
 
 def get_face_encodings():
+
+    # get names of faces and store in a list
     face_names = os.listdir(f"{faces_path}")
+
+    # empty list to store the face data in
     face_encodings = []
 
+    # go through each face and check against faces from images
     for i, name in enumerate(face_names):
+
+        # use the facial recognition library to find faces images
         face = fr.load_image_file(f"{faces_path}//{name}")
         face_encodings.append(fr.face_encodings(face)[0])
+
+        # change file name to face name to display later
         face_names[i] = name.split(".")[0]
 
     return face_encodings, face_names
@@ -24,6 +33,7 @@ def get_face_encodings():
 
 def find_Faces():
 
+    # get face info from intial face images and correspoinding names of each face
     face_encodings, face_names = get_face_encodings()
 
     # store video from latpop camera in variable video
@@ -34,46 +44,50 @@ def find_Faces():
 
     while True:
 
+        # get screenshot of sorts
         success, image = video.read()
 
+        # resize image
         resized_image = cv2.resize(image, (int(image.shape[1]/scl), int(image.shape[0]/scl)))
 
+        # convert to rgb for face_recognition library
         rgb_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB)
 
+        # get face data from faces on camera (program users)
         face_locations = fr.face_locations(rgb_image)
         unknown_encodings = fr.face_encodings(rgb_image, face_locations)
 
-
+        # go through each face provided in folder and compare to faces on screen to 'find faces present on screen'
         for face_encoding, face_location in zip(unknown_encodings, face_locations):
 
+            # see if the faces are the same based on the 'magical returned data'
             result = fr.compare_faces(face_encodings, face_encoding, 0.45)
 
             # draw box around and label the face if identified
             if True in result:
+
+                # label face if face is found
                 name = face_names[result.index(True)]
-
                 top, right, bottom, left = face_location
-
                 cv2.rectangle(image, (left*scl, top*scl), (right*scl, bottom*scl), (0, 0, 255), 2)
-
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(image, name, (left*scl, bottom*scl + 20), font, 0.8, (255, 255, 255), 1)
 
+                # Find face landmarks using face_recognition library and draw them on the user's face on screen
                 face_landmarks_list = face_recognition.face_landmarks(image)
-                # for face_landmarks in face_landmarks_list:
-                #     for facial_feature in face_landmarks.keys():
-                #         cv2.line(image, face_landmarks[facial_feature], width=5)
+
+                # loop over each landmark to draw
                 for face_landmarks in face_landmarks_list:
 
-                    # Let's trace out each facial feature in the image with a line!
+                    # loop over each facial feature to draw (ie lips, chin, etc)
                     for facial_feature in face_landmarks.keys():
-                        #d.line(face_landmarks[facial_feature], width=5)
-                        #print(face_landmarks[facial_feature])
+
+                        # loop through the points found to draw small lines that draw the facial feature
                         for i in range(0, len(face_landmarks[facial_feature])-2):
                             cv2.line(image, face_landmarks[facial_feature][i], face_landmarks[facial_feature][i+1], (255, 0, 255), 1)
 
 
-
+        # quit the program if 'q' key pressed - sometimes a little slow
         cv2.imshow("frame", image)
         k = cv2.waitKey(1)
         if k > 0:
@@ -123,18 +137,7 @@ def main():
     if consent == "y":
 
         # Use face_recognition library to identify faces using the laptop camera
-        find_Faces()
         print("Press 'q' to quit. Have fun!")
+        find_Faces()
 
 main()
-
-# to Do's
-
-# comment
-# fix keyboard interrupt at the end to end the video
-# add readme that explains how this meets the grading requirements
-# ask dr. j how enumerate works *************************************************
-
-# finish comments and read me
-
-# have the data - now just need to loop over the data and draw it on the image
